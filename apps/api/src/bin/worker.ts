@@ -1,6 +1,6 @@
 #!/usr/bin/env ts-node
 import { connectToDatabase, disconnectFromDatabase } from "../db";
-import { env } from "../lib/env";
+import { env } from "../config";
 import { captureService } from "../services/capture.service";
 import { screenshotQueueService } from "../services/screenshot-queue.service";
 

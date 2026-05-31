@@ -6,7 +6,7 @@ import express, {
   type Response,
 } from "express";
 import { connectToDatabase } from "./db";
-import { env } from "./lib/env";
+import { env } from "./config";
 import { HttpError } from "./lib/http-error";
 import { apiRouter } from "./routes";
 

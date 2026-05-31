@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { env } from "../lib/env";
+import { env } from "../config";
 import { AppModel } from "../models/app.model";
 import { ScreenshotModel, type ScreenshotDocument } from "../models/screenshot.model";
 import { ScreenshotStatus } from "../types";

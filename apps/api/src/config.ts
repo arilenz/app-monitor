@@ -3,8 +3,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// Project root: apps/api/src/lib -> ../../../.. -> app-monitor
-const PROJECT_ROOT = resolve(__dirname, "..", "..", "..", "..");
+// Project root: apps/api/src -> ../../.. -> app-monitor
+const PROJECT_ROOT = resolve(__dirname, "..", "..", "..");
 
 const number = (value: string | undefined, fallback: number): number => {
   const parsed = Number(value);

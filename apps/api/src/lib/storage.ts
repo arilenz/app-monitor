@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
-import { env } from "./env";
+import { env } from "../config";
 
 /**
  * Persists captured screenshot images. `save` returns the public path/URL that
