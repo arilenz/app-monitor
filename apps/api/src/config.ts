@@ -20,6 +20,13 @@ export const env = {
   screenshotsDir: process.env.SCREENSHOTS_DIR ?? resolve(PROJECT_ROOT, "screenshots"),
   publicScreenshotsPath: "/screenshots",
 
+  storage: {
+    // "local" writes to disk and serves via express.static (dev default);
+    // "gcs" uploads to a Cloud Storage bucket and returns public object URLs.
+    driver: process.env.STORAGE_DRIVER ?? "local",
+    gcsBucket: process.env.GCS_BUCKET ?? "",
+  },
+
   worker: {
     id: process.env.WORKER_ID ?? `worker-${process.pid}`,
     concurrency: number(process.env.WORKER_CONCURRENCY, 2),

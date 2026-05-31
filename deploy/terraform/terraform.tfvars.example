@@ -1,0 +1,16 @@
+# Copy to terraform.tfvars and fill in. terraform.tfvars is gitignored.
+
+project_id = "your-gcp-project-id"
+region     = "us-central1"
+
+# MongoDB Atlas SRV string, including user, password, and database name.
+mongodb_uri = "mongodb+srv://USER:PASSWORD@cluster0.xxxxx.mongodb.net/app-monitor?retryWrites=true&w=majority"
+
+# Tag of the images you pushed with build-and-push.sh (default "latest").
+# image_tag = "latest"
+
+# Override if "<project_id>-app-monitor-screenshots" is taken.
+# screenshots_bucket_name = "my-unique-screenshots-bucket"
+
+# Daily enqueue cron (UTC).
+# enqueue_schedule = "0 6 * * *"
