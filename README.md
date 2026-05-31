@@ -1,7 +1,7 @@
 # App Monitor
 
-Track competitors' Google Play listings and capture full‑page screenshots of
-each listing on a timeline over time.
+Track competitors' Google Play and Apple App Store listings and capture
+full‑page screenshots of each listing on a timeline over time.
 
 ## How the stack works
 
@@ -34,9 +34,9 @@ each listing on a timeline over time.
               └──────┬──────────────┘
                      │ capture → save image
                      ▼
-        ┌────────────────────┐  ┌────────────────────────┐
-        │ Google Play (web)  │  │ Image storage          │
-        └────────────────────┘  └────────────────────────┘
+        ┌─────────────────────────┐  ┌────────────────────────┐
+        │ Google Play / App Store │  │ Image storage          │
+        └─────────────────────────┘  └────────────────────────┘
 ```
 
 The `screenshots` collection **is** the job queue — a record with
