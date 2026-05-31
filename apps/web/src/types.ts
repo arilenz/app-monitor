@@ -1,4 +1,4 @@
-export type ScreenshotStatus = "pending" | "complete" | "failed";
+export type ScreenshotStatus = "pending" | "processing" | "complete" | "failed";
 
 export interface App {
   _id: string;

@@ -6,6 +6,7 @@ import { StatusBadge } from "./StatusBadge";
 
 const placeholderText = (screenshot: Screenshot): string => {
   if (screenshot.status === "failed") return screenshot.error ?? "Capture failed";
+  if (screenshot.status === "processing") return "Capturing…";
   return "No image yet";
 };
 

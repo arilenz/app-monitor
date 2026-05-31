@@ -39,7 +39,7 @@ export const ScreenshotTimeline = (props: ScreenshotTimelineProps) => {
     // refetchOnWindowFocus pulls the latest state when the user returns.
     refetchInterval: (current) => {
       const screenshots = current.state.data ?? [];
-      const hasPending = screenshots.some((screenshot) => screenshot.status === "pending");
+      const hasPending = screenshots.some((screenshot) => screenshot.status === "pending" || screenshot.status === "processing");
       return hasPending ? POLL_INTERVAL_MS : false;
     },
     refetchOnWindowFocus: true,
