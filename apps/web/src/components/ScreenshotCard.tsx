@@ -2,6 +2,7 @@ import { useState } from "react";
 import { apiUrl } from "../config";
 import { formatDateTime } from "../lib/format";
 import type { Screenshot } from "../types";
+import { ScreenshotModal } from "./ScreenshotModal";
 import { StatusBadge } from "./StatusBadge";
 
 const placeholderText = (screenshot: Screenshot): string => {
@@ -17,8 +18,10 @@ interface ScreenshotCardProps {
 export const ScreenshotCard = (props: ScreenshotCardProps) => {
   const screenshot = props.screenshot;
   const [imageFailed, setImageFailed] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const imageUrl = screenshot.imagePath ? apiUrl(screenshot.imagePath) : undefined;
   const showImage = screenshot.status === "complete" && Boolean(imageUrl) && !imageFailed;
+  const caption = `Listing captured ${formatDateTime(screenshot.createdAt)}`;
 
   return (
     <li className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
@@ -30,19 +33,30 @@ export const ScreenshotCard = (props: ScreenshotCardProps) => {
       </div>
 
       <div className="flex aspect-3/4 items-center justify-center bg-gray-50 p-2">
-        {showImage ? (
-          <img
-            src={imageUrl}
-            alt={`Listing captured ${formatDateTime(screenshot.createdAt)}`}
-            onError={() => setImageFailed(true)}
-            className="h-full w-full object-contain"
-          />
+        {showImage && imageUrl ? (
+          <button
+            type="button"
+            onClick={() => setIsOpen(true)}
+            title="View full screenshot"
+            className="h-full w-full cursor-zoom-in"
+          >
+            <img
+              src={imageUrl}
+              alt={caption}
+              onError={() => setImageFailed(true)}
+              className="h-full w-full object-contain"
+            />
+          </button>
         ) : (
           <p className="px-4 text-center text-sm text-gray-400">
             {placeholderText(screenshot)}
           </p>
         )}
       </div>
+
+      {isOpen && imageUrl && (
+        <ScreenshotModal src={imageUrl} caption={caption} onClose={() => setIsOpen(false)} />
+      )}
     </li>
   );
 };
