@@ -1,7 +1,14 @@
+import type { Store } from "./types";
+
 interface LocaleOption {
   value: string;
   label: string;
 }
+
+export const STORE_LABELS: Record<Store, string> = {
+  play: "Google Play",
+  app_store: "App Store",
+};
 
 // Mirrors the Language/Country enums enforced by the API.
 export const LANGUAGE_OPTIONS: LocaleOption[] = [

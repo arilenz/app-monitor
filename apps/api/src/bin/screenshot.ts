@@ -1,46 +1,48 @@
 #!/usr/bin/env ts-node
-import { PlayStoreScreenshotService } from "../services/play-store-screenshot.service";
+import { detectStore } from "../lib/stores";
+import { BrowserScreenshotService } from "../services/browser-screenshot.service";
 
 /**
  * Usage:
- *   npm run screenshot -- "<play-store-url>" [--hl=<lang>] [--gl=<country>]
+ *   npm run screenshot -- "<store-url>" [--hl=<lang>] [--gl=<country>]
  *
  * Examples:
  *   npm run screenshot -- "https://play.google.com/store/apps/details?id=com.whatsapp"
- *   npm run screenshot -- "https://play.google.com/store/apps/details?id=com.whatsapp" --hl=de --gl=DE
+ *   npm run screenshot -- "https://apps.apple.com/us/app/whatsapp-messenger/id310633997" --gl=DE --hl=de
  *
- *   --hl  Interface language only (e.g. de, ja). Does not change the store country.
- *   --gl  Store country/region (e.g. DE, JP). Does not change your apparent IP geo.
+ *   --hl  Interface language (e.g. de, ja).
+ *   --gl  Store country/region (e.g. DE, JP).
  */
-function parseFlag(args: string[], name: string): string | undefined {
+const parseFlag = (args: string[], name: string): string | undefined => {
   const prefix = `--${name}=`;
-  const match = args.find((arg) => arg.startsWith(prefix));
-  return match?.slice(prefix.length) || undefined;
-}
+  return args.find((arg) => arg.startsWith(prefix))?.slice(prefix.length) || undefined;
+};
 
-async function main(): Promise<void> {
+const main = async (): Promise<void> => {
   const args = process.argv.slice(2);
   const url = args.find((arg) => !arg.startsWith("--"));
   const hl = parseFlag(args, "hl");
   const gl = parseFlag(args, "gl");
 
-  if (!url) {
+  const store = url ? detectStore(url) : null;
+  if (!url || !store) {
     console.error(
-      'Usage: npm run screenshot -- "<play-store-url>" [--hl=<lang>] [--gl=<country>]\n' +
-        'Example: npm run screenshot -- "https://play.google.com/store/apps/details?id=com.whatsapp" --hl=de --gl=DE',
+      'Usage: npm run screenshot -- "<store-url>" [--hl=<lang>] [--gl=<country>]\n' +
+        "URL must be a Google Play or App Store app listing.",
     );
     process.exit(1);
   }
 
-  const service = new PlayStoreScreenshotService({ hl, gl });
-
+  const appId = store.extractAppId(url);
+  const listingUrl = store.buildListingUrl({ url, appId: appId ?? "", hl, gl });
   const locale = [gl, hl].filter(Boolean).join("/");
-  console.log(
-    `Capturing full-page screenshot of: ${url}${locale ? ` (locale: ${locale})` : ""}`,
-  );
-  const filePath = await service.captureAndSave(url);
+  const fileName = `${store.id}-${appId ?? "page"}-${Date.now()}.png`;
+
+  console.log(`Capturing ${store.label} listing: ${listingUrl}${locale ? ` (${locale})` : ""}`);
+  const service = new BrowserScreenshotService();
+  const filePath = await service.captureAndSave(listingUrl, fileName);
   console.log(`Saved screenshot to: ${filePath}`);
-}
+};
 
 main().catch((error) => {
   console.error("Failed to capture screenshot:", error);

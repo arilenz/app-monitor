@@ -4,6 +4,7 @@ import { api } from "../lib/api";
 import { formatDateTime, formatLocale } from "../lib/format";
 import { queryKeys } from "../lib/queryClient";
 import type { App } from "../types";
+import { StoreBadge } from "./StoreBadge";
 
 interface AppRowProps {
   app: App;
@@ -28,8 +29,9 @@ export const AppRow = (props: AppRowProps) => {
   return (
     <li className="flex items-center justify-between gap-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
       <Link to={`/apps/${app._id}`} className="min-w-0 flex-1">
-        <p className="truncate font-medium text-indigo-700 hover:underline">
-          {app.name ?? app.appId}
+        <p className="flex items-center gap-2 truncate font-medium text-indigo-700">
+          <span className="truncate hover:underline">{app.name ?? app.appId}</span>
+          <StoreBadge store={app.store} />
         </p>
         <p className="truncate text-sm text-gray-500">{app.appId}</p>
         <p className="mt-1 text-xs text-gray-400">

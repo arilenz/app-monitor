@@ -1,6 +1,6 @@
 import { Error as MongooseError, isValidObjectId } from "mongoose";
 import { badRequest, conflict, notFound } from "../lib/http-error";
-import { extractAppId, isPlayStoreAppUrl } from "../lib/play-store";
+import { detectStore } from "../lib/stores";
 import { AppModel, type AppDocument } from "../models/app.model";
 import { ScreenshotModel } from "../models/screenshot.model";
 import { screenshotQueueService } from "./screenshot-queue.service";
@@ -22,14 +22,16 @@ const optionalString = (value: unknown): string | undefined => {
 export class AppService {
   async create(input: CreateAppInput): Promise<AppDocument> {
     const url = optionalString(input?.url);
-    if (!url || !isPlayStoreAppUrl(url)) {
+    const store = url ? detectStore(url) : null;
+    if (!url || !store) {
       throw badRequest(
-        "`url` must be a valid Google Play app URL " +
-          "(https://play.google.com/store/apps/details?id=...)",
+        "`url` must be a valid Google Play " +
+          "(https://play.google.com/store/apps/details?id=...) or App Store " +
+          "(https://apps.apple.com/.../id...) app URL",
       );
     }
 
-    const appId = extractAppId(url);
+    const appId = store.extractAppId(url);
     if (!appId) throw badRequest("Could not extract an app id from the provided URL");
 
     const hl = optionalString(input.hl);
@@ -40,6 +42,7 @@ export class AppService {
     // asynchronously, so we can't rely on it alone. (`?? null` matches missing
     // fields, which Mongo treats as null in the index.)
     const alreadyTracked = await AppModel.exists({
+      store: store.id,
       appId,
       hl: hl ?? null,
       gl: gl ?? null,
@@ -49,7 +52,14 @@ export class AppService {
     }
 
     try {
-      const app = await AppModel.create({ url, appId, name: optionalString(input.name), hl, gl });
+      const app = await AppModel.create({
+        store: store.id,
+        url,
+        appId,
+        name: optionalString(input.name),
+        hl,
+        gl,
+      });
       // Kick off the first capture immediately — a worker will pick it up.
       await screenshotQueueService.enqueueForApp(app._id);
       return app;

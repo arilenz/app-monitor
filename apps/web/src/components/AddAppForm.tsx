@@ -58,16 +58,20 @@ export const AddAppForm = () => {
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="sm:col-span-2 block text-sm">
           <span className="mb-1 block font-medium text-gray-700">
-            Play Store URL <span className="text-red-500">*</span>
+            Store URL <span className="text-red-500">*</span>
           </span>
           <input
             type="url"
             required
             value={url}
             onChange={(event) => setUrl(event.target.value)}
-            placeholder="https://play.google.com/store/apps/details?id=com.example"
+            placeholder="Google Play or App Store listing URL"
             className={inputClass}
           />
+          <span className="mt-1 block text-xs text-gray-400">
+            e.g. https://play.google.com/store/apps/details?id=… or
+            https://apps.apple.com/…/id…
+          </span>
         </label>
 
         <label className="block text-sm">

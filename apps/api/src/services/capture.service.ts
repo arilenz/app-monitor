@@ -1,12 +1,14 @@
 import { buildScreenshotKey, screenshotStorage, type ScreenshotStorage } from "../lib/storage";
+import { getStore } from "../lib/stores";
 import { AppModel } from "../models/app.model";
-import { PlayStoreScreenshotService } from "./play-store-screenshot.service";
+import { BrowserScreenshotService } from "./browser-screenshot.service";
 import { screenshotQueueService, type ScreenshotQueueService } from "./screenshot-queue.service";
 
 export class CaptureService {
   constructor(
     private readonly queue: ScreenshotQueueService = screenshotQueueService,
     private readonly storage: ScreenshotStorage = screenshotStorage,
+    private readonly capturer: BrowserScreenshotService = new BrowserScreenshotService(),
   ) {}
 
   /**
@@ -25,11 +27,13 @@ export class CaptureService {
         return true;
       }
 
-      const capturer = new PlayStoreScreenshotService({
+      const listingUrl = getStore(app.store).buildListingUrl({
+        url: app.url,
+        appId: app.appId,
         hl: app.hl ?? undefined,
         gl: app.gl ?? undefined,
       });
-      const image = await capturer.capturePage(app.url);
+      const image = await this.capturer.capturePage(listingUrl);
 
       const key = buildScreenshotKey(app.appId, job._id.toString());
       const imagePath = await this.storage.save(key, image);

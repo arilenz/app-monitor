@@ -10,7 +10,7 @@ const App = () => (
           📲 App Monitor
         </Link>
         <p className="text-sm text-gray-500">
-          Track competitors' Google Play listings over time
+          Track competitors' Google Play &amp; App Store listings over time
         </p>
       </div>
     </header>

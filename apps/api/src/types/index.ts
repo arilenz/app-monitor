@@ -5,6 +5,12 @@ export enum ScreenshotStatus {
   Failed = "failed",
 }
 
+/** The app stores we can monitor. */
+export enum Store {
+  Play = "play",
+  AppStore = "app_store",
+}
+
 /**
  * Interface language for the Play Store listing (`hl` query param).
  * A pragmatic subset of Google Play's supported UI languages — extend as needed.
