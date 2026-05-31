@@ -12,6 +12,7 @@ export default defineConfig({
     // use same-origin relative URLs (/api/...).
     proxy: {
       "/api": { target: API_TARGET, changeOrigin: true },
+      "/screenshots": { target: API_TARGET, changeOrigin: true },
     },
   },
 });

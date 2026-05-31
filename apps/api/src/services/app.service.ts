@@ -3,6 +3,7 @@ import { badRequest, conflict, notFound } from "../lib/http-error";
 import { extractAppId, isPlayStoreAppUrl } from "../lib/play-store";
 import { AppModel, type AppDocument } from "../models/app.model";
 import { ScreenshotModel } from "../models/screenshot.model";
+import { screenshotQueueService } from "./screenshot-queue.service";
 import type { CreateAppInput } from "../types";
 
 const MONGO_DUPLICATE_KEY = 11000;
@@ -48,9 +49,10 @@ export class AppService {
     }
 
     try {
-      // Capture is intentionally NOT triggered here yet — apps are only stored
-      // for now. Screenshot collection will be wired in a later step.
-      return await AppModel.create({ url, appId, name: optionalString(input.name), hl, gl });
+      const app = await AppModel.create({ url, appId, name: optionalString(input.name), hl, gl });
+      // Kick off the first capture immediately — a worker will pick it up.
+      await screenshotQueueService.enqueueForApp(app._id);
+      return app;
     } catch (error) {
       if (isDuplicateKeyError(error)) {
         throw conflict("This app is already being tracked for the given locale");

@@ -7,6 +7,8 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "screenshot": "ts-node src/bin/screenshot.ts",
+    "worker": "ts-node src/bin/worker.ts",
+    "enqueue-daily": "ts-node src/bin/enqueue-daily.ts",
     "typecheck": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -1,5 +1,6 @@
 export enum ScreenshotStatus {
   Pending = "pending",
+  Processing = "processing",
   Complete = "complete",
   Failed = "failed",
 }

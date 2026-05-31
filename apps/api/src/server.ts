@@ -20,6 +20,9 @@ export const createApp = (): Express => {
     res.json({ status: "ok" });
   });
 
+  // Serve captured screenshot images from local storage.
+  app.use(env.publicScreenshotsPath, express.static(env.screenshotsDir));
+
   app.use("/api", apiRouter);
 
   // Unmatched routes.

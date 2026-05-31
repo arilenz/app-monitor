@@ -1,4 +1,4 @@
-import { Schema, model, type InferSchemaType } from "mongoose";
+import { Schema, model, type HydratedDocument, type InferSchemaType } from "mongoose";
 import { ScreenshotStatus } from "../types";
 
 const screenshotSchema = new Schema(
@@ -17,9 +17,19 @@ const screenshotSchema = new Schema(
     error: { type: String },
     /** When the capture actually ran (distinct from createdAt). */
     capturedAt: { type: Date },
+    /** Number of times a worker has claimed this job (for retry limits). */
+    attempts: { type: Number, default: 0 },
+    /** When the current worker claimed the job (drives stale-lock recovery). */
+    lockedAt: { type: Date },
+    /** Identifier of the worker currently holding the job. */
+    lockedBy: { type: String },
   },
   { timestamps: true },
 );
 
-export type ScreenshotDocument = InferSchemaType<typeof screenshotSchema>;
+// Supports the atomic claim: find the oldest pending job efficiently.
+screenshotSchema.index({ status: 1, createdAt: 1 });
+
+export type ScreenshotProps = InferSchemaType<typeof screenshotSchema>;
+export type ScreenshotDocument = HydratedDocument<ScreenshotProps>;
 export const ScreenshotModel = model("Screenshot", screenshotSchema);
