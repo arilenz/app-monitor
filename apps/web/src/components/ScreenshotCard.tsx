@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { apiUrl } from "../config";
 import { formatDateTime } from "../lib/format";
 import type { Screenshot } from "../types";
 import { StatusBadge } from "./StatusBadge";
@@ -15,8 +16,8 @@ interface ScreenshotCardProps {
 export const ScreenshotCard = (props: ScreenshotCardProps) => {
   const screenshot = props.screenshot;
   const [imageFailed, setImageFailed] = useState(false);
-  const showImage =
-    screenshot.status === "complete" && Boolean(screenshot.imagePath) && !imageFailed;
+  const imageUrl = screenshot.imagePath ? apiUrl(screenshot.imagePath) : undefined;
+  const showImage = screenshot.status === "complete" && Boolean(imageUrl) && !imageFailed;
 
   return (
     <li className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
@@ -30,7 +31,7 @@ export const ScreenshotCard = (props: ScreenshotCardProps) => {
       <div className="flex aspect-3/4 items-center justify-center bg-gray-50 p-2">
         {showImage ? (
           <img
-            src={screenshot.imagePath}
+            src={imageUrl}
             alt={`Listing captured ${formatDateTime(screenshot.createdAt)}`}
             onError={() => setImageFailed(true)}
             className="h-full w-full object-contain"

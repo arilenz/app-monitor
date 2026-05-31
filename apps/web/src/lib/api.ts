@@ -1,6 +1,7 @@
+import { API_BASE_URL } from "../config";
 import type { App, CreateAppInput, Screenshot } from "../types";
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? "/api";
+const BASE_URL = `${API_BASE_URL}/api`;
 
 const request = async <T>(path: string, init?: RequestInit): Promise<T> => {
   const response = await fetch(`${BASE_URL}${path}`, {
