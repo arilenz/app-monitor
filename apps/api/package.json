@@ -9,6 +9,7 @@
     "screenshot": "ts-node src/bin/screenshot.ts",
     "worker": "ts-node src/bin/worker.ts",
     "enqueue-daily": "ts-node src/bin/enqueue-daily.ts",
+    "install:browser": "playwright install chromium",
     "typecheck": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
